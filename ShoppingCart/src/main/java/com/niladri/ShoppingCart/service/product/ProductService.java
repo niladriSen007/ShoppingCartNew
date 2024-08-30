@@ -6,8 +6,8 @@ import com.niladri.ShoppingCart.model.Category;
 import com.niladri.ShoppingCart.model.Product;
 import com.niladri.ShoppingCart.repo.category.CategoryRepo;
 import com.niladri.ShoppingCart.repo.product.ProductRepo;
-import com.niladri.ShoppingCart.request.AddProductRequest;
-import com.niladri.ShoppingCart.request.UpdateProductRequest;
+import com.niladri.ShoppingCart.request.product.AddProductRequest;
+import com.niladri.ShoppingCart.request.product.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +26,10 @@ public class ProductService implements IproductService {
     public Product addProduct(AddProductRequest request) {
 
         //if product category is there then create product
-        Category newCategory = Optional.ofNullable(categoryRepo.findByName(request.getProductCategory().getCategoryName()))
-                .orElseGet(() -> {
-                    Category category = new Category(request.getProductCategory().getCategoryName());
-                    return categoryRepo.save(category);
-                });
+        Category newCategory = Optional.ofNullable(categoryRepo.findByName(request.getProductCategory().getCategoryName())).orElseGet(() -> {
+            Category category = new Category(request.getProductCategory().getCategoryName());
+            return categoryRepo.save(category);
+        });
 
         request.setProductCategory(newCategory);
         Product newProduct = ProductHelpers.createProduct(request, newCategory);
@@ -39,14 +38,12 @@ public class ProductService implements IproductService {
 
     @Override
     public Product getProductById(Long productId) {
-        return productRepo.findById(productId).
-                orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return productRepo.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
 
     @Override
     public Product updateProduct(UpdateProductRequest request, Long productId) {
-        Product existingProduct = productRepo.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        Product existingProduct = productRepo.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));
         Product updatedProduct = null;
         if (existingProduct != null) {
             updatedProduct = ProductHelpers.updateProduct(request, existingProduct);
@@ -57,10 +54,9 @@ public class ProductService implements IproductService {
 
     @Override
     public void deleteProduct(Long productId) {
-        productRepo.findById(productId).ifPresentOrElse(product -> productRepo.delete(product),
-                () -> {
-                    throw new ProductNotFoundException("Product not found");
-                });
+        productRepo.findById(productId).ifPresentOrElse(product -> productRepo.delete(product), () -> {
+            throw new ProductNotFoundException("Product not found");
+        });
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.niladri.ShoppingCart.helperfunc;
 
 import com.niladri.ShoppingCart.model.Category;
 import com.niladri.ShoppingCart.model.Product;
-import com.niladri.ShoppingCart.request.AddProductRequest;
-import com.niladri.ShoppingCart.request.UpdateProductRequest;
+import com.niladri.ShoppingCart.request.product.AddProductRequest;
+import com.niladri.ShoppingCart.request.product.UpdateProductRequest;
 
 public class ProductHelpers {
     public static Product createProduct(AddProductRequest request, Category category) {
