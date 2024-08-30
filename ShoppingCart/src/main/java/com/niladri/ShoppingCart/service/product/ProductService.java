@@ -43,13 +43,15 @@ public class ProductService implements IproductService {
 
     @Override
     public Product updateProduct(UpdateProductRequest request, Long productId) {
-        Product existingProduct = productRepo.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        Product updatedProduct = null;
-        if (existingProduct != null) {
-            updatedProduct = ProductHelpers.updateProduct(request, existingProduct);
+        Optional<Product> existingProduct = Optional.of(productRepo.findById(productId))
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        if (existingProduct.isPresent()) {
+            Product updatedProduct = ProductHelpers.updateProduct(request, existingProduct.get());
             productRepo.save(updatedProduct);
+            return updatedProduct;
         }
-        return updatedProduct;
+            return null;
+        
     }
 
     @Override

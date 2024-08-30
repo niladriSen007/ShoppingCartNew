@@ -40,13 +40,15 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public Category updateCategory(UpdateCategoryRequest request, Long categoryId) {
-        Category existingCategory = categoryRepo.findById(categoryId).orElseThrow(() -> new CategoryNotFound("Category not found"));
         Category updatedCategory = null;
-        if (existingCategory != null) {
-            updatedCategory = CategoryHelpers.updateCategory(request, existingCategory);
+        Optional<Category> existingCategory = Optional.of(categoryRepo.findById(categoryId))
+                .orElseThrow(() -> new CategoryNotFound("Category not found"));
+        if (existingCategory.isPresent()) {
+            updatedCategory = CategoryHelpers.updateCategory(request, existingCategory.get());
             categoryRepo.save(updatedCategory);
+            return updatedCategory;
         }
-        return updatedCategory;
+        return null;
     }
 
     @Override
